@@ -66,7 +66,7 @@ object DataProvide {
         list.add(
             listOf(
                 ButtonData("⅟x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("1/(") }),
-                ButtonData("²√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("²√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("√") }),
                 ButtonData("³√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("ⁿ√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("ln", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("ln(") }),
@@ -98,9 +98,9 @@ object DataProvide {
         list.add(
             listOf(
                 ButtonData("Rad", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("sinh", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("cosh", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("tanh", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("sinh", btnWidth, btnHeight, Color.White, bgColor, onClick = {onClick("sinh(")}),
+                ButtonData("cosh", btnWidth, btnHeight, Color.White, bgColor, onClick = {onClick("cosh(")}),
+                ButtonData("tanh", btnWidth, btnHeight, Color.White, bgColor, onClick = {onClick("tanh(")}),
                 ButtonData("π", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("Rand", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("0", btnWidth * 2, btnHeight, Color.White, bgGray, onClick),
@@ -194,5 +194,6 @@ object DataProvide {
 
 
     fun intList(): List<String>  = listOf("0","1","2","3","4","5","6","7","8","9")
-    fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(")
+    fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(", "√", "sinh(","cosh(","tanh(")
+    fun easySymbolList(): List<String> = listOf("π", "e")
 }
