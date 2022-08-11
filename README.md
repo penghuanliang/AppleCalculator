@@ -10,13 +10,13 @@
 
 - 竖屏展示
 
-  ![](.\img\portrait.png)
+  ![竖屏展示](.\img\portrait.png)
 
 
 
 - 横屏效果图
 
-​	![](.\img\horizontal.png)
+​	![横屏效果图](.\img\horizontal.png)
 
 - mp4视频效果
 
