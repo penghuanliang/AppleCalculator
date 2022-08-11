@@ -51,7 +51,7 @@ object DataProvide {
                 ButtonData("2nd", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("x²", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^2") }),
                 ButtonData("x³", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^3") }),
-                ButtonData("xⁿ", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("xⁿ", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^") }),
                 ButtonData("e×", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("e^") }),
                 ButtonData("10×", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("10^") }),
                 ButtonData("7", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -68,7 +68,7 @@ object DataProvide {
                 ButtonData("⅟x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("1/(") }),
                 ButtonData("²√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("√") }),
                 ButtonData("³√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^(1/3)") }),
-                ButtonData("ⁿ√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("ⁿ√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^(1/") }),
                 ButtonData("ln", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("ln(") }),
                 ButtonData("log₁₀", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("lg(") }),
                 ButtonData("4", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -197,4 +197,5 @@ object DataProvide {
     fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(", "√", "sinh(","cosh(","tanh(")
     fun postfixSymbolList(): List<String> = listOf("!","^2", "^3", "^(1/3)")
     fun easySymbolList(): List<String> = listOf("π", "e")
+    fun multiInputList(): List<String> = listOf("^", "^(1/","+", "-", "×", "÷")
 }

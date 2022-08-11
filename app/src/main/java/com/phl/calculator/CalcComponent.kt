@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.phl.calculator.data.ButtonData
 
 @Composable
-fun CalculatorHorizontalLayout(
+fun CalculatorKeyboardLayout(
     list: List<List<ButtonData>>,
 ) {
 

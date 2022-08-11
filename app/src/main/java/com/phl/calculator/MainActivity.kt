@@ -30,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val currentValueState = mutableStateListOf("0")
     private val operatorState = mutableStateOf("")
     private val orientationState by lazy { mutableStateOf(resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) }
+    private val completeState = mutableStateOf(false)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting(saveValueState, currentValueState, operatorState, orientationState)
+                    Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState)
                 }
             }
         }
@@ -66,13 +67,14 @@ fun Greeting(
     saveValueState: MutableState<String>,
     currentValueState: SnapshotStateList<String>,
     operatorState: MutableState<String>,
-    orientationState: MutableState<Boolean>
+    orientationState: MutableState<Boolean>,
+    completeState: MutableState<Boolean>
 ) {
     val historyComponent = remember { saveValueState }
     val formulaComponent = remember { currentValueState }
     val operator = remember { operatorState }
     val expand = remember { orientationState }
-
+    val complete = remember { completeState }
 
     Box(
         modifier = Modifier
@@ -91,6 +93,7 @@ fun Greeting(
                 historyComponent = historyComponent,
                 list = formulaComponent,
                 operator = operator,
+                complete = complete
             )
         }
     }
@@ -114,8 +117,12 @@ fun DefaultPreview() {
          mutableStateOf("")
      }
 
+    val completeState = remember {
+        mutableStateOf(false)
+    }
+
     CalculatorTheme {
-        Greeting(saveValueState, currentValueState, operatorState, orientationState)
+        Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState)
     }
 }
 
@@ -125,7 +132,8 @@ fun NumPad(
     expand: MutableState<Boolean>,
     historyComponent: MutableState<String>,
     list: SnapshotStateList<String>,
-    operator: MutableState<String>
+    operator: MutableState<String>,
+    complete: MutableState<Boolean>
 ) {
     var currentOperation = ""
     val onClick: (value: Any) -> Unit = { value: Any ->
@@ -142,34 +150,19 @@ fun NumPad(
                 }
             }
 
-            "+", "-", "×", "÷" -> {
-                try {
-                    currentOperation = value.toString()
-                    operator.value = currentOperation
-
-                    if (historyComponent.value.isBlank()) {
-                        historyComponent.value = list.formatStrList()
-                    } else {
-                        val result = calculate("${historyComponent.value}$value$currentValue").stripTrailingZeros()
-                        list.clear()
-                        list.add(result)
-                        historyComponent.value = result
-                    }
-                } catch (e: Exception) {
-                    list.clear()
-                    list.add("Error!")
-                }
-            }
-
             "%" -> {
                 try {
                     val result = BigDecimal(currentValue).divide(BigDecimal(100)).stripTrailingZeros().toString()
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
+                    complete.value = true
                 } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
                 }
             }
 
@@ -179,19 +172,40 @@ fun NumPad(
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
                 } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
                 }
             }
             "AC" -> {
                 list.clear()
                 list.add("0")
                 historyComponent.value = ""
+                operator.value = ""
             }
 
             in DataProvide.intList() -> {
-                if (currentValue.length < 10) {
+                // 考虑计算完成,重新输入数字
+                if (complete.value) {
+                    historyComponent.value = ""
+                    list.clear()
+                    list.add("0")
+                    complete.value = false
+                }
+
+
+                val maxLength = if (expand.value) {
+                    20
+                } else {
+                    10
+                }
+
+                if (currentValue.length < maxLength) {
                     if (currentOperation.isNotBlank()) {
                         list.clear()
                         list.add("0")
@@ -213,18 +227,17 @@ fun NumPad(
 
             in DataProvide.prefixSymbolList() -> {
                 try {
-                    var expression = "${value}$currentValue"
-                    if (value.toString().contains("(")) {
-                        expression += ")"
-                    }
-                    val result = calculate(expression).stripTrailingZeros()
-
+                    val result = calculate("${value}$currentValue").stripTrailingZeros()
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
+                    complete.value = true
                 } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
                 }
             }
 
@@ -234,9 +247,13 @@ fun NumPad(
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
+                    complete.value = true
                 } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
                 }
             }
 
@@ -246,9 +263,34 @@ fun NumPad(
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
+                    complete.value = true
                 } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
+                    complete.value = true
+                }
+            }
+
+            in DataProvide.multiInputList() -> {
+                try {
+                    if (historyComponent.value.isBlank() || operator.value != value) {
+                        historyComponent.value = list.formatStrList()
+                        currentOperation = value.toString()
+                        operator.value = currentOperation
+                    } else {
+                        val result = calculate("${historyComponent.value}$value$currentValue").stripTrailingZeros()
+                        list.clear()
+                        list.add(result)
+                        historyComponent.value = result
+                        operator.value = ""
+                    }
+                } catch (e: Exception) {
+                    list.clear()
+                    list.add("Error!")
+                    historyComponent.value = ""
+                    operator.value = ""
                 }
             }
 
@@ -262,18 +304,33 @@ fun NumPad(
     Row(modifier = modifier.fillMaxWidth()) {
         val context = LocalContext.current
         if (expand.value) {
-            CalculatorHorizontalLayout(DataProvide.generateHorizontalData(context, onClick))
+            CalculatorKeyboardLayout(DataProvide.generateHorizontalData(context, onClick))
         } else {
-            CalculatorHorizontalLayout(DataProvide.generateVerticalData(context, onClick))
+            CalculatorKeyboardLayout(DataProvide.generateVerticalData(context, onClick))
         }
     }
 }
 
 
 private fun calculate(expression: String): String {
-    val replaceStr = expression.replace("√", "sqrt")
+    var replaceStr = expression.replace("√", "sqrt")
         .replace("×", "*")
         .replace("÷", "/")
+
+    val leftCount = replaceStr.count {
+        it == '('
+    }
+
+    val rightCount = replaceStr.count{
+        it == ')'
+    }
+
+    val count = leftCount - rightCount
+    if (count > 0) {
+        for (i in 0 until count) {
+            replaceStr+=")"
+        }
+    }
 
     val e: Expression = ExpressionBuilder(replaceStr)
         .function(ln)
