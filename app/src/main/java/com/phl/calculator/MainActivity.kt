@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
     private val saveValueState = mutableStateOf("")
     private val currentValueState = mutableStateListOf("0")
     private val operatorState = mutableStateOf("")
-    private val errorState = mutableStateOf(false)
     private val orientationState by lazy { mutableStateOf(resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) }
 
 
@@ -43,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting(saveValueState, currentValueState, operatorState, errorState, orientationState)
+                    Greeting(saveValueState, currentValueState, operatorState, orientationState)
                 }
             }
         }
@@ -67,13 +66,11 @@ fun Greeting(
     saveValueState: MutableState<String>,
     currentValueState: SnapshotStateList<String>,
     operatorState: MutableState<String>,
-    errorState: MutableState<Boolean>,
     orientationState: MutableState<Boolean>
 ) {
     val historyComponent = remember { saveValueState }
     val formulaComponent = remember { currentValueState }
     val operator = remember { operatorState }
-    val onError = remember { errorState }
     val expand = remember { orientationState }
 
 
@@ -86,7 +83,6 @@ fun Greeting(
             TopTextContainer(
                 expand = expand,
                 list = formulaComponent,
-                error = onError
             )
 
             NumPad(
@@ -95,7 +91,6 @@ fun Greeting(
                 historyComponent = historyComponent,
                 list = formulaComponent,
                 operator = operator,
-                onError = onError
             )
         }
     }
@@ -118,11 +113,9 @@ fun DefaultPreview() {
      val operatorState = remember {
          mutableStateOf("")
      }
-     val errorState = remember {
-         mutableStateOf(false)
-     }
+
     CalculatorTheme {
-        Greeting(saveValueState, currentValueState, operatorState, errorState, orientationState)
+        Greeting(saveValueState, currentValueState, operatorState, orientationState)
     }
 }
 
@@ -132,8 +125,7 @@ fun NumPad(
     expand: MutableState<Boolean>,
     historyComponent: MutableState<String>,
     list: SnapshotStateList<String>,
-    operator: MutableState<String>,
-    onError: MutableState<Boolean>
+    operator: MutableState<String>
 ) {
     var currentOperation = ""
     val onClick: (value: Any) -> Unit = { value: Any ->
@@ -158,17 +150,12 @@ fun NumPad(
                     if (historyComponent.value.isBlank()) {
                         historyComponent.value = list.formatStrList()
                     } else {
-                        val result =
-                            calculate("${historyComponent.value}$value$currentValue").stripTrailingZeros()
-                        if (result == "NaN") {
-                            onError.value = true
-                        }
+                        val result = calculate("${historyComponent.value}$value$currentValue").stripTrailingZeros()
                         list.clear()
                         list.add(result)
                         historyComponent.value = result
                     }
                 } catch (e: Exception) {
-                    onError.value = true
                     list.clear()
                     list.add("Error!")
                 }
@@ -176,17 +163,11 @@ fun NumPad(
 
             "%" -> {
                 try {
-                    val result =
-                        BigDecimal(currentValue).divide(BigDecimal(100)).stripTrailingZeros()
-                            .toString()
-                    if (result == "NaN") {
-                        onError.value = true
-                    }
+                    val result = BigDecimal(currentValue).divide(BigDecimal(100)).stripTrailingZeros().toString()
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
                 } catch (e: Exception) {
-                    onError.value = true
                     list.clear()
                     list.add("Error!")
                 }
@@ -194,16 +175,11 @@ fun NumPad(
 
             "=" -> {
                 try {
-                    val result =
-                        calculate("${historyComponent.value}${operator.value}$currentValue").stripTrailingZeros()
-                    if (result == "NaN") {
-                        onError.value = true
-                    }
+                    val result = calculate("${historyComponent.value}${operator.value}$currentValue").stripTrailingZeros()
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
                 } catch (e: Exception) {
-                    onError.value = true
                     list.clear()
                     list.add("Error!")
                 }
@@ -215,63 +191,62 @@ fun NumPad(
             }
 
             in DataProvide.intList() -> {
-                if (onError.value) {
-                    list.clear()
-                    list.add("$value")
-                    onError.value = false
-                } else {
-                    if (currentValue.length < 10) {
-                        if (currentOperation.isNotBlank()) {
-                            list.clear()
-                            list.add("0")
-                            currentOperation = ""
-                        }
-
-                        //处理0字符
-                        currentValue = list.formatStrList()
-                        if (currentValue.startsWith("0") && !currentValue.startsWith("0.") && value != ".") {
-                            list.removeAt(0)
-                        }
-                        if (currentValue.startsWith("-0") && !currentValue.startsWith("-0.") && value != ".") {
-                            list.removeAt(1)
-                        }
-
-                        list.add("$value")
+                if (currentValue.length < 10) {
+                    if (currentOperation.isNotBlank()) {
+                        list.clear()
+                        list.add("0")
+                        currentOperation = ""
                     }
+
+                    //处理0字符
+                    currentValue = list.formatStrList()
+                    if (currentValue.startsWith("0") && !currentValue.startsWith("0.") && value != ".") {
+                        list.removeAt(0)
+                    }
+                    if (currentValue.startsWith("-0") && !currentValue.startsWith("-0.") && value != ".") {
+                        list.removeAt(1)
+                    }
+
+                    list.add("$value")
                 }
             }
 
-            in DataProvide.prefixSymbolList() ->{
+            in DataProvide.prefixSymbolList() -> {
                 try {
                     var expression = "${value}$currentValue"
                     if (value.toString().contains("(")) {
                         expression += ")"
                     }
                     val result = calculate(expression).stripTrailingZeros()
-                    if (result == "NaN") {
-                        onError.value = true
-                    }
+
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
                 } catch (e: Exception) {
-                    onError.value = true
                     list.clear()
                     list.add("Error!")
                 }
             }
 
-            in DataProvide.easySymbolList() ->{
+            in DataProvide.postfixSymbolList() -> {
                 try {
-                    val result = calculate(value.toString()).stripTrailingZeros()
-                    if (result == "NaN") {
-                        onError.value = true
-                    }
+                    val result = calculate("$currentValue${value}").stripTrailingZeros()
                     list.clear()
                     list.add(result)
                     historyComponent.value = ""
                 } catch (e: Exception) {
-                    onError.value = true
+                    list.clear()
+                    list.add("Error!")
+                }
+            }
+
+            in DataProvide.easySymbolList() -> {
+                try {
+                    val result = calculate(value.toString()).stripTrailingZeros()
+                    list.clear()
+                    list.add(result)
+                    historyComponent.value = ""
+                } catch (e: Exception) {
                     list.clear()
                     list.add("Error!")
                 }
