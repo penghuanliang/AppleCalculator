@@ -234,7 +234,9 @@ fun NumPad(
                         list.removeAt(1)
                     }
 
-                    list.add("$value")
+                    if (value != "." || !currentValue.contains(".")) {
+                        list.add("$value")
+                    }
                 }
             }
 
