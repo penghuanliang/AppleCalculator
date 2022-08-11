@@ -67,7 +67,7 @@ object DataProvide {
             listOf(
                 ButtonData("⅟x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("1/(") }),
                 ButtonData("²√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("√") }),
-                ButtonData("³√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("³√x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^(1/3)") }),
                 ButtonData("ⁿ√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("ln", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("ln(") }),
                 ButtonData("log₁₀", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("lg(") }),
@@ -195,5 +195,6 @@ object DataProvide {
 
     fun intList(): List<String>  = listOf("0","1","2","3","4","5","6","7","8","9")
     fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(", "√", "sinh(","cosh(","tanh(")
+    fun postfixSymbolList(): List<String> = listOf("!","^2", "^3", "^(1/3)")
     fun easySymbolList(): List<String> = listOf("π", "e")
 }

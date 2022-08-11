@@ -29,7 +29,6 @@ fun TopTextContainer(
     modifier: Modifier = Modifier,
     expand: MutableState<Boolean>,
     list: SnapshotStateList<String>,
-    error: MutableState<Boolean>
 ) {
     val fontSize = if (expand.value) 20 else 50
     val context = LocalContext.current
@@ -47,16 +46,11 @@ fun TopTextContainer(
             onValueChange = { },
             maxLines = 1,
             textStyle = TextStyle(
-                color = if (error.value) {
-                    Color.Red
-                } else {
-                    Color.White
-                },
+                color = Color.White,
                 fontSize = fontSize.sp,
                 textAlign = TextAlign.End,
             ),
             readOnly = true,
-            isError = error.value,
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
                 autoCorrect = false,

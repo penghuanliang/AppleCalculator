@@ -9,7 +9,7 @@ fun String.stripTrailingZeros(): String {
         return this
     }
 
-    return BigDecimal(this).stripTrailingZeros().toString()
+    return BigDecimal(this).stripTrailingZeros().toPlainString()
 }
 
 
