@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
     private val operatorState = mutableStateOf("")
     private val orientationState by lazy { mutableStateOf(resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) }
     private val completeState = mutableStateOf(false)
+    private val highlightSymbol = mutableStateOf("")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState)
+                    Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol)
                 }
             }
         }
@@ -68,13 +69,15 @@ fun Greeting(
     currentValueState: SnapshotStateList<String>,
     operatorState: MutableState<String>,
     orientationState: MutableState<Boolean>,
-    completeState: MutableState<Boolean>
+    completeState: MutableState<Boolean>,
+    highlightSymbol: MutableState<String>
 ) {
     val historyComponent = remember { saveValueState }
     val formulaComponent = remember { currentValueState }
     val operator = remember { operatorState }
     val expand = remember { orientationState }
     val complete = remember { completeState }
+    val symbol = remember { highlightSymbol }
 
     Box(
         modifier = Modifier
@@ -93,7 +96,8 @@ fun Greeting(
                 historyComponent = historyComponent,
                 list = formulaComponent,
                 operator = operator,
-                complete = complete
+                complete = complete,
+                symbol
             )
         }
     }
@@ -121,8 +125,12 @@ fun DefaultPreview() {
         mutableStateOf(false)
     }
 
+    val highlightSymbol = remember {
+        mutableStateOf("")
+    }
+
     CalculatorTheme {
-        Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState)
+        Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol)
     }
 }
 
@@ -133,11 +141,16 @@ fun NumPad(
     historyComponent: MutableState<String>,
     list: SnapshotStateList<String>,
     operator: MutableState<String>,
-    complete: MutableState<Boolean>
+    complete: MutableState<Boolean>,
+    highlightSymbol: MutableState<String>
 ) {
     var currentOperation = ""
     val onClick: (value: Any) -> Unit = { value: Any ->
         var currentValue = list.formatStrList()
+
+        if (historyComponent.value.isNotBlank() && value !in DataProvide.multiInputList()) {
+            highlightSymbol.value = ""
+        }
 
         when (value) {
             "+/_" -> {
@@ -191,7 +204,7 @@ fun NumPad(
 
             in DataProvide.intList() -> {
                 // 考虑计算完成,重新输入数字
-                if (complete.value) {
+                if (complete.value && operator.value.isBlank()) {
                     historyComponent.value = ""
                     list.clear()
                     list.add("0")
@@ -275,16 +288,18 @@ fun NumPad(
 
             in DataProvide.multiInputList() -> {
                 try {
-                    if (historyComponent.value.isBlank() || operator.value != value) {
+                    currentOperation = value.toString()
+                    if (historyComponent.value.isBlank() || highlightSymbol.value.isNotBlank()) {
                         historyComponent.value = list.formatStrList()
-                        currentOperation = value.toString()
                         operator.value = currentOperation
+                        highlightSymbol.value = currentOperation
                     } else {
-                        val result = calculate("${historyComponent.value}$value$currentValue").stripTrailingZeros()
+                        val result = calculate("${historyComponent.value}${operator.value}$currentValue").stripTrailingZeros()
                         list.clear()
                         list.add(result)
                         historyComponent.value = result
-                        operator.value = ""
+                        operator.value = currentOperation
+                        highlightSymbol.value = currentOperation
                     }
                 } catch (e: Exception) {
                     list.clear()
