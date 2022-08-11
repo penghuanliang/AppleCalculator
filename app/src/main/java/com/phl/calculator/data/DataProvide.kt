@@ -122,7 +122,6 @@ object DataProvide {
         val btnWidth = context.resources.configuration.screenWidthDp / 4
 
         //控件背景颜色
-        val bgColor = colorResource(context, R.color.bg_color_21)
         val bgGray = colorResource(context, R.color.bg_gray)
         val bgLightGray = colorResource(context, R.color.bg_light_gray)
         val bgOrange = colorResource(context, R.color.bg_orange)
