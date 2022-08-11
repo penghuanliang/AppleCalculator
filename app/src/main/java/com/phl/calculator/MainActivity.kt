@@ -241,6 +241,26 @@ fun NumPad(
                 }
             }
 
+            in DataProvide.prefixSymbolList() ->{
+                try {
+                    var expression = "${value}$currentValue"
+                    if (value.toString().contains("(")) {
+                        expression += ")"
+                    }
+                    val result = calculate(expression).stripTrailingZeros()
+                    if (result == "NaN") {
+                        onError.value = true
+                    }
+                    list.clear()
+                    list.add(result)
+                    historyComponent.value = ""
+                } catch (e: Exception) {
+                    onError.value = true
+                    list.clear()
+                    list.add("Error!")
+                }
+            }
+
             //展开的运算符待完善
             else -> {
 

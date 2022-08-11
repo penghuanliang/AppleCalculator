@@ -49,11 +49,11 @@ object DataProvide {
         list.add(
             listOf(
                 ButtonData("2nd", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("x²", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("x³", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("x²", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^2") }),
+                ButtonData("x³", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("^3") }),
                 ButtonData("xⁿ", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("e×", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("10×", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("e×", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("e^") }),
+                ButtonData("10×", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("10^") }),
                 ButtonData("7", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("8", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("9", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -65,12 +65,12 @@ object DataProvide {
         //第三列数据
         list.add(
             listOf(
-                ButtonData("⅟x", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("⅟x", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("1/(") }),
                 ButtonData("²√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("³√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("ⁿ√x", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("ln", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("log₁₀", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("ln", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("ln(") }),
+                ButtonData("log₁₀", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("lg(") }),
                 ButtonData("4", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("5", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("6", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -81,10 +81,10 @@ object DataProvide {
         //第四列数据
         list.add(
             listOf(
-                ButtonData("x!", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("sin", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("cos", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("tan", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("x!", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("!") }),
+                ButtonData("sin", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("sin(")}),
+                ButtonData("cos", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("cos(")}),
+                ButtonData("tan", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("tan(")}),
                 ButtonData("e", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("EE", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("1", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -195,4 +195,5 @@ object DataProvide {
 
 
     fun intList(): List<String>  = listOf("0","1","2","3","4","5","6","7","8","9")
+    fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(")
 }
