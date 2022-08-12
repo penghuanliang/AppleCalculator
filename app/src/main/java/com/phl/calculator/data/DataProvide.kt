@@ -35,8 +35,8 @@ object DataProvide {
                 ButtonData("(", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData(")", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("mc", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("m+", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("m-", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("m+", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("++") }),
+                ButtonData("m-", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("--") }),
                 ButtonData("mr", btnWidth, btnHeight, Color.White, bgColor, onClick),
                 ButtonData("AC", btnWidth, btnHeight, Color.Black, bgLightGray, onClick),
                 ButtonData("+/_", btnWidth, btnHeight, Color.Black, bgLightGray, onClick),
@@ -86,7 +86,7 @@ object DataProvide {
                 ButtonData("cos", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("cos(")}),
                 ButtonData("tan", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("tan(")}),
                 ButtonData("e", btnWidth, btnHeight, Color.White, bgColor, onClick),
-                ButtonData("EE", btnWidth, btnHeight, Color.White, bgColor, onClick),
+                ButtonData("EE", btnWidth, btnHeight, Color.White, bgColor, onClick = { onClick("×10^") }),
                 ButtonData("1", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("2", btnWidth, btnHeight, Color.White, bgGray, onClick),
                 ButtonData("3", btnWidth, btnHeight, Color.White, bgGray, onClick),
@@ -195,7 +195,7 @@ object DataProvide {
 
     fun intList(): List<String>  = listOf("0","1","2","3","4","5","6","7","8","9", ".")
     fun prefixSymbolList(): List<String>  = listOf("sin(","cos(","tan(","e^","10^","1/(","ln(","lg(", "√", "sinh(","cosh(","tanh(")
-    fun postfixSymbolList(): List<String> = listOf("!","^2", "^3", "^(1/3)")
-    fun easySymbolList(): List<String> = listOf("π", "e")
-    fun multiInputList(): List<String> = listOf("^", "^(1/","+", "-", "×", "÷")
+    fun postfixSymbolList(): List<String> = listOf("!","^2", "^3", "^(1/3)", "++", "--")
+    fun easySymbolList(): List<String> = listOf("π", "e", "Rand", "mc", "mr")
+    fun multiInputList(): List<String> = listOf("^", "^(1/","+", "-", "×", "÷", "×10^")
 }

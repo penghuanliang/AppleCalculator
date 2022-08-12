@@ -352,7 +352,12 @@ private fun calculate(expression: String): String {
     val e: Expression = ExpressionBuilder(replaceStr)
         .function(ln)
         .function(lg)
+        .function(rand)
+        .function(mc)
+        .function(mr)
         .operator(factorial)
+        .operator(mPlus)
+        .operator(mMinus)
         .build()
     return e.evaluate().toString()
 }

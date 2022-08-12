@@ -27,3 +27,42 @@ val lg: Function = object : Function("lg", 1) {
         return log10(args[0])
     }
 }
+
+val rand: Function = object : Function("Rand",0){
+    override fun apply(vararg args: Double): Double {
+        return Math.random()
+    }
+}
+
+
+var MEMORY_NUMBER = "0"
+
+val mc: Function = object : Function("mc",0){
+    override fun apply(vararg args: Double): Double {
+        MEMORY_NUMBER = "0"
+        return 0.0
+    }
+}
+
+val mr: Function = object : Function("mr",0){
+    override fun apply(vararg args: Double): Double {
+        return MEMORY_NUMBER.toDouble()
+    }
+}
+
+val mPlus: Operator = object : Operator("++", 1, true, PRECEDENCE_POWER + 2) {
+    override fun apply(vararg args: Double): Double {
+        val plus = args[0].plus(MEMORY_NUMBER.toDouble())
+        MEMORY_NUMBER = plus.toString()
+        return plus
+    }
+}
+
+val mMinus: Operator = object : Operator("--", 1, true, PRECEDENCE_POWER + 3) {
+    override fun apply(vararg args: Double): Double {
+        val minus = MEMORY_NUMBER.toDouble().minus(args[0])
+        MEMORY_NUMBER = minus.toString()
+        return minus
+    }
+}
+
