@@ -26,12 +26,13 @@ import java.math.BigDecimal
 
 class MainActivity : ComponentActivity() {
 
-    private val saveValueState = mutableStateOf("")
-    private val currentValueState = mutableStateListOf("0")
-    private val operatorState = mutableStateOf("")
-    private val orientationState by lazy { mutableStateOf(resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) }
-    private val completeState = mutableStateOf(false)
-    private val highlightSymbol = mutableStateOf("")
+    private val saveValueState      = mutableStateOf("")
+    private val currentValueState   = mutableStateListOf("0")
+    private val operatorState       = mutableStateOf("")
+    private val orientationState    by lazy { mutableStateOf(resources.configuration.orientation != Configuration.ORIENTATION_PORTRAIT) }
+    private val completeState       = mutableStateOf(false)
+    private val highlightSymbol     = mutableStateOf("")
+    private val secondFunction      = mutableStateOf(false)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol)
+                    Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol, secondFunction, degState)
                 }
             }
         }
@@ -70,14 +71,18 @@ fun Greeting(
     operatorState: MutableState<String>,
     orientationState: MutableState<Boolean>,
     completeState: MutableState<Boolean>,
-    highlightSymbol: MutableState<String>
+    highlightSymbol: MutableState<String>,
+    secondFunction: MutableState<Boolean>,
+    degState: MutableState<Boolean>
 ) {
     val historyComponent = remember { saveValueState }
     val formulaComponent = remember { currentValueState }
-    val operator = remember { operatorState }
-    val expand = remember { orientationState }
-    val complete = remember { completeState }
-    val symbol = remember { highlightSymbol }
+    val operator         = remember { operatorState }
+    val expand           = remember { orientationState }
+    val complete         = remember { completeState }
+    val symbol           = remember { highlightSymbol }
+    val secondFun        = remember { secondFunction }
+    val deg              = remember { degState }
 
     Box(
         modifier = Modifier
@@ -88,6 +93,7 @@ fun Greeting(
             TopTextContainer(
                 expand = expand,
                 list = formulaComponent,
+                degState = deg
             )
 
             NumPad(
@@ -97,7 +103,9 @@ fun Greeting(
                 list = formulaComponent,
                 operator = operator,
                 complete = complete,
-                symbol
+                highlightSymbol = symbol,
+                secondFunction = secondFun,
+                degState = deg
             )
         }
     }
@@ -111,26 +119,31 @@ fun DefaultPreview() {
     val orientationState = remember {
         mutableStateOf(false)
     }
-     val saveValueState = remember {
-         mutableStateOf("")
-     }
-     val currentValueState = remember {
-         mutableStateListOf("0")
-     }
-     val operatorState = remember {
-         mutableStateOf("")
-     }
-
+    val saveValueState = remember {
+        mutableStateOf("")
+    }
+    val currentValueState = remember {
+        mutableStateListOf("0")
+    }
+    val operatorState = remember {
+        mutableStateOf("")
+    }
     val completeState = remember {
         mutableStateOf(false)
     }
-
     val highlightSymbol = remember {
         mutableStateOf("")
     }
+    val secondFunction = remember {
+        mutableStateOf(false)
+    }
+    val degState = remember {
+        mutableStateOf(false)
+    }
+
 
     CalculatorTheme {
-        Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol)
+        Greeting(saveValueState, currentValueState, operatorState, orientationState, completeState, highlightSymbol, secondFunction, degState)
     }
 }
 
@@ -142,7 +155,9 @@ fun NumPad(
     list: SnapshotStateList<String>,
     operator: MutableState<String>,
     complete: MutableState<Boolean>,
-    highlightSymbol: MutableState<String>
+    highlightSymbol: MutableState<String>,
+    secondFunction: MutableState<Boolean>,
+    degState: MutableState<Boolean>
 ) {
     var currentOperation = ""
     val onClick: (value: Any) -> Unit = { value: Any ->
@@ -311,7 +326,12 @@ fun NumPad(
                 }
             }
 
-            //展开的运算符待完善
+            "2nd" -> {
+                secondFunction.value = !secondFunction.value
+            }
+            "Rad", "Deg" -> {
+                degState.value = !degState.value
+            }
             else -> {
 
             }
@@ -321,7 +341,7 @@ fun NumPad(
     Row(modifier = modifier.fillMaxWidth()) {
         val context = LocalContext.current
         if (expand.value) {
-            CalculatorKeyboardLayout(DataProvide.generateHorizontalData(context, onClick))
+            CalculatorKeyboardLayout(DataProvide.generateHorizontalData(context, secondFunction.value, degState.value, onClick))
         } else {
             CalculatorKeyboardLayout(DataProvide.generateVerticalData(context, onClick))
         }
@@ -355,6 +375,15 @@ private fun calculate(expression: String): String {
         .function(rand)
         .function(mc)
         .function(mr)
+        .function(sin)
+        .function(cos)
+        .function(tan)
+        .function(sin_1)
+        .function(cos_1)
+        .function(tan_1)
+        .function(sinh_1)
+        .function(cosh_1)
+        .function(tanh_1)
         .operator(factorial)
         .operator(mPlus)
         .operator(mMinus)
