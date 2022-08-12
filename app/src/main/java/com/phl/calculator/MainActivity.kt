@@ -187,7 +187,7 @@ fun NumPad(
                     complete.value = true
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                     complete.value = true
@@ -204,7 +204,7 @@ fun NumPad(
                     complete.value = true
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                     complete.value = true
@@ -264,7 +264,7 @@ fun NumPad(
                     complete.value = true
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                     complete.value = true
@@ -280,7 +280,7 @@ fun NumPad(
                     complete.value = true
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                     complete.value = true
@@ -296,7 +296,7 @@ fun NumPad(
                     complete.value = true
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                     complete.value = true
@@ -320,7 +320,7 @@ fun NumPad(
                     }
                 } catch (e: Exception) {
                     list.clear()
-                    list.add("Error!")
+                    list.add("错误")
                     historyComponent.value = ""
                     operator.value = ""
                 }
