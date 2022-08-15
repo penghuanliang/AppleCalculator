@@ -16,13 +16,13 @@
 
 - 横屏效果图
 
-​	![横屏效果图](./img/horizontal.png)
+  ![横屏效果图](./img/horizontal.png)	
 
 - mp4视频效果
 
-<video src="./img/MP4.mp4"></video>
+  <video src="./img/MP4.mp4"></video>
 
+### 结束语
 
-
-
+使用**Compose**高度还原**IPhone版**计算器，项目到此基本就结束了，通过这个小项目掌握了一些基本的`API`使用，但是相对于**Compose**这一门开发语言开发才刚刚起步，深知仍有多的东西需要学习，让我们一起加油卷下去吧。哈哈...
 
