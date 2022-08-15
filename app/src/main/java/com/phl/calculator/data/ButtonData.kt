@@ -8,5 +8,7 @@ data class ButtonData(
     val height: Int = width,
     val textColor: Color,
     val bgColor: Color,
-    val onClick: (value: Any) -> Unit
+    val onClick: (value: Any) -> Unit,
+    var selectTextColor: Color = textColor,
+    var selectBgColor: Color = bgColor,
 )

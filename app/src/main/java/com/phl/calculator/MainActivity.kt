@@ -17,9 +17,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.phl.calculator.data.DataProvide
+import com.phl.calculator.data.DataProvide.processMultiInputSymbol
 import com.phl.calculator.ext.formatStrList
 import com.phl.calculator.ext.stripTrailingZeros
 import com.phl.calculator.ui.theme.CalculatorTheme
+import com.phl.calculator.ui.theme.ColorOrange
 import net.objecthunter.exp4j.Expression
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.math.BigDecimal
@@ -163,7 +165,8 @@ fun NumPad(
     val onClick: (value: Any) -> Unit = { value: Any ->
         var currentValue = list.formatStrList()
 
-        if (historyComponent.value.isNotBlank() && value !in DataProvide.multiInputList()) {
+        if (historyComponent.value.isNotBlank() && (value !in DataProvide.multiInputList() && value != "2nd")) {
+            currentOperation = highlightSymbol.value
             highlightSymbol.value = ""
         }
 
@@ -340,11 +343,15 @@ fun NumPad(
 
     Row(modifier = modifier.fillMaxWidth()) {
         val context = LocalContext.current
-        if (expand.value) {
-            CalculatorKeyboardLayout(DataProvide.generateHorizontalData(context, secondFunction.value, degState.value, onClick))
+        val dataList = if (expand.value) {
+            DataProvide.generateHorizontalData(context, secondFunction.value, degState.value, onClick)
         } else {
-            CalculatorKeyboardLayout(DataProvide.generateVerticalData(context, onClick))
+            DataProvide.generateVerticalData(context, onClick)
         }
+
+        processMultiInputSymbol(highlightSymbol, dataList)
+
+        CalculatorKeyboardLayout(dataList)
     }
 }
 

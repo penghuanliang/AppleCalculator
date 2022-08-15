@@ -3,6 +3,7 @@ package com.phl.calculator.data
 import android.content.Context
 import android.os.Build
 import androidx.annotation.ColorRes
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import com.phl.calculator.R
 import com.phl.calculator.ui.theme.*
@@ -205,4 +206,31 @@ object DataProvide {
     fun postfixSymbolList(): List<String> = listOf("!","^2", "^3", "^(1/3)", "++", "--")
     fun easySymbolList(): List<String> = listOf("π", "e", "Rand", "mc", "mr")
     fun multiInputList(): List<String> = listOf("^", "^(1/","+", "-", "×", "÷", "×10^")
+
+    /**
+     * 四则运算符号及EE、xⁿ、ⁿ√x添加选中样式
+     */
+    fun processMultiInputSymbol(highlightSymbol: MutableState<String>, list: List<List<ButtonData>>) {
+
+        val symbolStr = when(highlightSymbol.value){
+            "^" -> "xⁿ"
+            "^(1/" -> "ⁿ√x"
+            "×10^" -> "EE"
+            else -> highlightSymbol.value
+        }
+
+        list.forEach {
+            it.forEach { btnData->
+                if (symbolStr == btnData.text) {
+                    btnData.selectTextColor = if (isFourFundamentalRules(symbolStr)) ColorOrange else Color.Black
+                    btnData.selectBgColor = if (isFourFundamentalRules(symbolStr)) Color.White else Color80
+                } else {
+                    btnData.selectTextColor = btnData.textColor
+                    btnData.selectBgColor = btnData.bgColor
+                }
+            }
+        }
+    }
+
+    private fun isFourFundamentalRules(symbol: String) = listOf("+", "-", "×", "÷").contains(symbol)
 }

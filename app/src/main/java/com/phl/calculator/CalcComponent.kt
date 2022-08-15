@@ -33,8 +33,8 @@ fun CalculatorKeyboardLayout(
                         text = it.text,
                         width = it.width,
                         height = it.height,
-                        textColor = it.textColor,
-                        bgColor = it.bgColor,
+                        textColor = it.selectTextColor,
+                        bgColor = it.selectBgColor,
                         onClick = it.onClick
                     )
                 }
