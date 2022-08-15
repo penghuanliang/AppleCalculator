@@ -21,7 +21,6 @@ import com.phl.calculator.data.DataProvide.processMultiInputSymbol
 import com.phl.calculator.ext.formatStrList
 import com.phl.calculator.ext.stripTrailingZeros
 import com.phl.calculator.ui.theme.CalculatorTheme
-import com.phl.calculator.ui.theme.ColorOrange
 import net.objecthunter.exp4j.Expression
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.math.BigDecimal
