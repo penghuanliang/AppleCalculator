@@ -16,11 +16,11 @@
 
 - 横屏效果图
 
-  ![横屏效果图](./img/horizontal.png)	
+  ![横屏效果图](./img/horizontal.png)
 
-- mp4视频效果
+- GIF效果图
 
-  <video src="./img/MP4.mp4"></video>
+  ![GIF效果图](./img/GIF.gif)
 
 ### 结束语
 
